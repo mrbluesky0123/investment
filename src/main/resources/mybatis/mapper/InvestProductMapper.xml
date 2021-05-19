@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.exam.invest.repository.InvestProductMapper">
+    <select id="selectAllAvailableProducts" resultType="InvestProduct">
+        <![CDATA[
+        SELECT /* invest@selectAllAvailableProducts@투자 가능 상품 조회 */
+            product_id,
+            product_category,
+            product_name,
+            started_at,
+            finished_at,
+            total_invest_amount,
+            max_invest_amount
+        FROM INV_PRDUCT_MST
+        WHERE started_at <= CURRENT_DATE
+          AND finished_at >= CURRENT_DATE
+        ]]>
+    </select>
+    <select id="selectOneProduct" parameterType="String" resultType="InvestProduct">
+        SELECT /* invest@selectAllAvailableProducts@투자 상품 조회 */
+            product_id,
+            product_category,
+            product_name,
+            started_at,
+            finished_at,
+            total_invest_amount,
+            max_invest_amount
+        FROM INV_PRDUCT_MST
+        WHERE product_id = #{value}
+    </select>
+</mapper>

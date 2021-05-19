@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.exam.user.repository.UserProductsMapper">
+    <select id="selectUserInvestedProducts" parameterType="String" resultType="UserProductsDto">
+        <![CDATA[
+        SELECT product_id, invested_at, invest_amount
+          FROM INV_PRDUCT_HST
+         WHERE user_id = #{value}
+           AND cancel_yn <> 'Y'
+        ]]>
+    </select>
+</mapper>

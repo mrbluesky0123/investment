@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.exam.user.repository.UserAccountMapper">
+    <select id="selectOneUserAccount" parameterType="String" resultType="UserAccount">
+        SELECT /* user@selectOneUserAccount@사용자 계좌 및 잔액조회 */
+            account_id,
+            user_id,
+            balance_amount,
+            inactive_yn
+        FROM USR_ACNBLN_MST
+        WHERE user_id = #{value}
+    </select>
+    <update id="updateUserAccountBalance" parameterType="UserAccount">
+        UPDATE /* user@updateUserAccountBalance@사용자 계좌 잔액 갱신 */
+              USR_ACNBLN_MST
+          SET balance_amount = #{balanceAmount}, updated_at = CURRENT_DATE
+        WHERE user_id = #{userId}
+    </update>
+</mapper>

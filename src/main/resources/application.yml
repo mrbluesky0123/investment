@@ -1,0 +1,18 @@
+server:
+  port: 8091
+
+spring:
+  datasource:
+
+    url: jdbc:h2:mem:testdb
+    driver-class-name: org.h2.Driver
+    username: kakaopay
+    password:
+    initialization-mode: always
+  h2:
+    console:
+      enabled: true
+
+mybatis:
+  mapper-locations: mybatis/mapper/*.xml
+  config-location: classpath:mybatis/mybatis-config.xml

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.exam.invest.repository.InvestProductHistoryMapper">
+    <select id="selectProductInvestedAmount" parameterType="String" resultType="BigDecimal">
+        <![CDATA[
+        SELECT /* invest@selectProductInvestedAmount@투자 상품 투자 금액 내역 조회 */
+               NVL(sum(HST.invest_amount), 0) invest_amount
+        FROM   INV_prduct_MST MST,
+               INV_prduct_HST HST
+        WHERE  MST.product_id = #{value}
+          AND  MST.product_id = HST.product_id
+          AND  HST.invested_at BETWEEN MST.started_at AND MST.finished_at
+          AND  HST.cancel_yn <> 'Y'
+        GROUP  BY MST.product_id
+        ]]>
+    </select>
+
+    <select id="selectUserProductInvestedAmount" parameterType="InvestProductHistory" resultType="BigDecimal">
+        <![CDATA[
+        SELECT /* invest@selectUserProductInvestedAmount@사용자 투자 상품 투자 금액 내역 조회  */
+               sum(HST.invest_amount) invest_amount
+        FROM   INV_prduct_MST MST,
+               INV_prduct_HST HST
+        WHERE  MST.product_id = #{productId}
+          AND  HST.user_id = #{userId}
+          AND  MST.product_id = HST.product_id
+          AND  HST.invested_at BETWEEN MST.started_at AND MST.finished_at
+          AND  HST.cancel_yn <> 'Y'
+        GROUP  BY MST.product_id,
+                  HST.user_id
+        ]]>
+    </select>
+
+    <insert id="insertUserProductInvestHistory" parameterType="InvestProductHistory" >
+        INSERT INTO /* invest@insertUserProductInvestHistory@사용자 투자 상품 투자 내역 적재 */
+            INV_PRDUCT_HST
+        (invest_id,
+         product_id,
+         user_id,
+         invested_at,
+         invest_amount,
+         cancel_yn,
+         created_at,
+         created_user_id,
+         updated_at,
+         updated_user_id)
+        VALUES      (SEQ_INV_PRDUCT_HST.nextval,
+                        #{productId},
+                        #{userId},
+                        CURRENT_DATE,
+                        #{investAmount},
+                        #{cancelYn},
+                     CURRENT_DATE,
+                     'SYSTEM',
+                     CURRENT_DATE,
+                     'SYSTEM')
+    </insert>
+
+    <select id="selectProductInvestedStatus" parameterType="String" resultType="InvestProductInfoDto">
+        <![CDATA[
+        SELECT /* invest@selectProductInvestedAmount@투자 상품 투자 금액 및 투자자 수 내역 조회 */
+              HST.product_id product_id,
+              sum(HST.invest_amount) current_invest_amount,
+              count(*) investor_number
+        FROM  INV_PRDUCT_MST MST,
+              INV_PRDUCT_HST HST
+        WHERE  MST.product_id = #{value}
+          AND  MST.product_id = HST.product_id
+          AND  HST.invested_at BETWEEN MST.started_at AND MST.finished_at
+          AND  HST.cancel_yn <> 'Y'
+        GROUP  BY HST.product_id
+        ]]>
+    </select>
+
+</mapper>
